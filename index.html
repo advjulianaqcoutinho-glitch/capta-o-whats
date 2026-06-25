@@ -6,6 +6,21 @@
   <title>Método Projeto Fechado — Mais projetos fechados, menos curiosos na sua agenda</title>
   <meta name="description" content="Sistema de clientes exclusivo para lojas de móveis planejados. Pare de depender só de indicação e tenha um fluxo previsível de oportunidades reais todos os meses." />
 
+  <!-- ===================== META PIXEL (base) ===================== -->
+  <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '993342428094789');
+    /* PageView NÃO é disparado aqui de propósito — ele é disparado no script
+       de tracking com um eventID, para deduplicar com a CAPI. */
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=993342428094789&ev=PageView&noscript=1" alt="" /></noscript>
+  <!-- ===================== /META PIXEL ===================== -->
+
   <!-- Favicon (SVG inline, dourado com "PF") -->
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23e9a23b'/%3E%3Ctext x='50%25' y='52%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial,sans-serif' font-size='30' font-weight='bold' fill='%231a1206'%3EPF%3C/text%3E%3C/svg%3E" />
 
@@ -1075,5 +1090,92 @@
       }
     })();
   </script>
+
+  <!-- ===================== TRACKING: PIXEL + CAPI ===================== -->
+  <script>
+    (function () {
+      "use strict";
+
+      /* ---------- helpers ---------- */
+      function uuid() {
+        if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+          var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+      }
+      function getCookie(name) {
+        var m = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+        return m ? m.pop() : '';
+      }
+      function getQuery(name) {
+        try { return new URLSearchParams(location.search).get(name) || ''; }
+        catch (e) { return ''; }
+      }
+      // _fbc: usa o cookie; se não existir mas houver fbclid na URL, monta no formato do Meta
+      function getFbc() {
+        var fbc = getCookie('_fbc');
+        if (fbc) return fbc;
+        var fbclid = getQuery('fbclid');
+        return fbclid ? ('fb.1.' + Date.now() + '.' + fbclid) : '';
+      }
+      // external_id: id anônimo e persistente por navegador (melhora a correspondência)
+      function getExternalId() {
+        try {
+          var id = localStorage.getItem('pf_ext_id');
+          if (!id) { id = uuid(); localStorage.setItem('pf_ext_id', id); }
+          return id;
+        } catch (e) { return ''; }
+      }
+
+      /* ---------- envia o mesmo evento para a CAPI (servidor) ---------- */
+      function sendCapi(eventName, eventId, customData) {
+        var payload = {
+          event_name: eventName,
+          event_id: eventId,                 // mesmo do Pixel -> dedup
+          event_source_url: location.href,
+          fbp: getCookie('_fbp'),
+          fbc: getFbc(),
+          external_id: getExternalId(),
+          custom_data: customData || {}
+        };
+        try {
+          fetch('/api/capi', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            keepalive: true                  // garante o envio mesmo ao trocar de aba/página
+          }).catch(function () {});
+        } catch (e) {}
+      }
+
+      /* ---------- dispara Pixel + CAPI juntos ---------- */
+      function track(eventName, customData) {
+        var eventId = uuid();
+        if (window.fbq) fbq('track', eventName, customData || {}, { eventID: eventId });
+        sendCapi(eventName, eventId, customData);
+      }
+
+      /* ---------- PageView no carregamento ---------- */
+      track('PageView', {
+        content_name: document.title,
+        page_path: location.pathname
+      });
+
+      /* ---------- Lead no clique em qualquer CTA de WhatsApp ---------- */
+      document.addEventListener('click', function (e) {
+        var el = e.target.closest && e.target.closest('a[data-cta]');
+        if (!el) return;
+        var local = el.getAttribute('data-cta') || 'cta';
+        track('Lead', {
+          content_name: 'WhatsApp - ' + local,
+          content_category: 'lead_whatsapp',
+          cta_location: local,            // hero, plano, objecao, final, float, etc.
+          status: 'click_whatsapp'
+        });
+      }, true);
+    })();
+  </script>
+  <!-- ===================== /TRACKING ===================== -->
 </body>
 </html>
