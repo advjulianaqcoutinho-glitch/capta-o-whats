@@ -167,40 +167,11 @@
     .sec-head p { color: var(--muted); font-size: 1.08rem; }
 
     /* =========================================================
-       NAV
-       ========================================================= */
-    .nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
-      transition: background .3s ease, backdrop-filter .3s ease, border-color .3s ease;
-      border-bottom: 1px solid transparent;
-    }
-    .nav.scrolled {
-      background: rgba(10,10,12,.82);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--line);
-    }
-    .nav-inner {
-      display: flex; align-items: center; justify-content: space-between;
-      height: 70px;
-    }
-    .brand { display: flex; align-items: center; gap: 11px; font-family: 'Sora'; font-weight: 800; font-size: 1.05rem; }
-    .brand .dot {
-      width: 34px; height: 34px; border-radius: 9px;
-      background: linear-gradient(135deg, var(--gold-soft), var(--gold-deep));
-      display: grid; place-items: center; color: #1a1206; font-size: .95rem; font-weight: 800;
-      box-shadow: 0 6px 18px -6px rgba(233,162,59,.6);
-    }
-    .brand small { display: block; font-size: .68rem; font-weight: 600; color: var(--muted-2); letter-spacing: .12em; text-transform: uppercase; font-family: 'Plus Jakarta Sans'; }
-    .nav .btn { padding: 12px 20px; font-size: .92rem; }
-    .nav-cta-text { display: none; }
-    @media (min-width: 720px) { .nav-cta-text { display: inline; } }
-
-    /* =========================================================
        SEÇÃO 1 — HERO
        ========================================================= */
     .hero {
       position: relative;
-      padding: 150px 0 90px;
+      padding: clamp(64px, 9vw, 96px) 0 90px;
       overflow: hidden;
       background:
         radial-gradient(1100px 520px at 75% -5%, rgba(233,162,59,.16), transparent 60%),
@@ -601,22 +572,6 @@
 </head>
 <body>
 
-  <!-- ===================== NAV ===================== -->
-  <nav class="nav" id="nav">
-    <div class="container nav-inner">
-      <a href="#" class="brand" aria-label="Método Projeto Fechado">
-        <span class="dot">PF</span>
-        <span>Projeto Fechado<small>com Igor</small></span>
-      </a>
-      <a class="btn btn-primary"
-         href="https://wa.me/5553999972327?text=Oi%20Igor,%20acabei%20de%20ver%20a%20p%C3%A1gina%20do%20M%C3%A9todo%20Projeto%20Fechado%20e%20quero%20entender%20se%20serve%20para%20minha%20loja%20de%20planejados."
-         target="_blank" rel="noopener" data-cta="nav">
-        <svg class="wa" viewBox="0 0 24 24" aria-hidden="true"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.945C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 018.413 3.488 11.824 11.824 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.51 5.26l-.999 3.648 3.978-1.045z"/></svg>
-        <span class="nav-cta-text">Falar no WhatsApp</span>
-      </a>
-    </div>
-  </nav>
-
   <!-- ===================== SEÇÃO 1 — HERO ===================== -->
   <header class="hero">
     <div class="hero-grid-bg"></div>
@@ -886,20 +841,20 @@
         <div class="fit-col yes reveal from-left">
           <h3><span class="tag">✓</span> Para quem é</h3>
           <ul class="fit-list">
-            <li><span class="i">✓</span> Loja de móveis planejados com <strong>ticket médio saudável</strong></li>
-            <li><span class="i">✓</span> Tem pelo menos <strong>1 pessoa dedicada</strong> a atender os leads</li>
-            <li><span class="i">✓</span> Já entendeu que <strong>depender só de indicação é arriscado</strong></li>
-            <li><span class="i">✓</span> Está disposto a <strong>investir em mídia mensalmente</strong> pra crescer</li>
+            <li><span class="i">✓</span> <span>Loja de móveis planejados com <strong>ticket médio saudável</strong></span></li>
+            <li><span class="i">✓</span> <span>Tem pelo menos <strong>1 pessoa dedicada</strong> a atender os leads</span></li>
+            <li><span class="i">✓</span> <span>Já entendeu que <strong>depender só de indicação é arriscado</strong></span></li>
+            <li><span class="i">✓</span> <span>Está disposto a <strong>investir em mídia mensalmente</strong> pra crescer</span></li>
           </ul>
         </div>
 
         <div class="fit-col no reveal from-right">
           <h3><span class="tag">✕</span> Não é para</h3>
           <ul class="fit-list">
-            <li><span class="i">✕</span> Quem <strong>não tem ninguém</strong> pra atender os contatos da internet</li>
-            <li><span class="i">✕</span> Quem quer viver de <strong>promoção e guerra de preço</strong></li>
-            <li><span class="i">✕</span> Quem espera <strong>“milagre em 15 dias”</strong> ou só “aparecer mais no Instagram”</li>
-            <li><span class="i">✕</span> Quem <strong>não está disposto a colocar verba mínima</strong> em tráfego</li>
+            <li><span class="i">✕</span> <span>Quem <strong>não tem ninguém</strong> pra atender os contatos da internet</span></li>
+            <li><span class="i">✕</span> <span>Quem quer viver de <strong>promoção e guerra de preço</strong></span></li>
+            <li><span class="i">✕</span> <span>Quem espera <strong>“milagre em 15 dias”</strong> ou só “aparecer mais no Instagram”</span></li>
+            <li><span class="i">✕</span> <span>Quem <strong>não está disposto a colocar verba mínima</strong> em tráfego</span></li>
           </ul>
         </div>
       </div>
@@ -1028,12 +983,10 @@
       /* ---- Ano no footer ---- */
       document.getElementById('year').textContent = new Date().getFullYear();
 
-      /* ---- Nav: muda no scroll ---- */
-      var nav = document.getElementById('nav');
+      /* ---- WhatsApp flutuante + parallax no scroll ---- */
       var waFloat = document.getElementById('waFloat');
       function onScroll() {
         var y = window.scrollY || window.pageYOffset;
-        nav.classList.toggle('scrolled', y > 30);
         waFloat.classList.toggle('show', y > 600);
         // parallax sutil
         if (!prefersReduced) {
