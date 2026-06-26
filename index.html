@@ -727,7 +727,7 @@
       <!-- CONTADOR DE VAGAS -->
       <div class="urgency-bar reveal in" data-delay="5">
         <span class="urgency-dot"></span>
-        <span>Aceitando novas lojas em julho —&nbsp;<strong id="vagas-txt">2 vagas restantes</strong></span>
+        <span>Aceitando novas lojas em <strong id="mes-atual">julho</strong> —&nbsp;<strong id="vagas-txt">2 vagas restantes</strong></span>
         <span class="urgency-slots" aria-hidden="true">
           <span class="urgency-slot filled"></span>
           <span class="urgency-slot filled"></span>
@@ -1354,6 +1354,13 @@
       var vagasTxt = document.getElementById('vagas-txt');
       if (vagasTxt) {
         vagasTxt.textContent = restantes + (restantes === 1 ? ' vaga restante' : ' vagas restantes');
+      }
+      // mês atual em português, atualiza sozinho todo mês
+      var mesEl = document.getElementById('mes-atual');
+      if (mesEl) {
+        var meses = ['janeiro','fevereiro','março','abril','maio','junho',
+                     'julho','agosto','setembro','outubro','novembro','dezembro'];
+        mesEl.textContent = meses[new Date().getMonth()];
       }
       // atualiza os bolinhas
       var slots = document.querySelectorAll('.urgency-slot');
