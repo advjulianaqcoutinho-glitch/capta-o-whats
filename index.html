@@ -583,6 +583,96 @@
       .reveal { opacity: 1; transform: none; }
       html { scroll-behavior: auto; }
     }
+
+    /* =========================================================
+       URGÊNCIA — contador de vagas
+       ========================================================= */
+    .urgency-bar {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 22px;
+      background: rgba(233,162,59,.07);
+      border: 1px solid rgba(233,162,59,.28);
+      border-radius: 999px;
+      padding: 10px 20px;
+      font-size: .9rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .urgency-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex: none;
+      background: var(--gold);
+      box-shadow: 0 0 8px var(--gold);
+      animation: upulse 1.6s ease-in-out infinite;
+    }
+    @keyframes upulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.5)} }
+    .urgency-bar strong { color: var(--gold); }
+    .urgency-slots { display: inline-flex; gap: 5px; margin-left: 4px; }
+    .urgency-slot {
+      width: 9px; height: 9px; border-radius: 50%;
+    }
+    .urgency-slot.filled { background: var(--gold); }
+    .urgency-slot.empty { background: rgba(233,162,59,.18); border: 1px solid rgba(233,162,59,.35); }
+
+    /* =========================================================
+       SOCIAL PROOF — toast
+       ========================================================= */
+    .sp-wrap {
+      position: fixed; bottom: 100px; left: 16px;
+      z-index: 55; pointer-events: none;
+    }
+    @media (max-width: 767px) { .sp-wrap { bottom: 88px; } }
+
+    .sp-toast {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--bg-3);
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--green);
+      border-radius: 14px;
+      padding: 13px 15px;
+      max-width: 290px;
+      box-shadow: 0 20px 40px -10px rgba(0,0,0,.7);
+      transform: translateX(calc(-100% - 20px));
+      opacity: 0;
+      transition: transform .55s cubic-bezier(.2,.8,.2,1), opacity .55s ease;
+      pointer-events: auto;
+    }
+    .sp-toast.show { transform: translateX(0); opacity: 1; }
+    .sp-toast.hide { transform: translateX(calc(-100% - 20px)); opacity: 0; }
+    .sp-av {
+      width: 38px; height: 38px; border-radius: 50%; flex: none;
+      background: linear-gradient(135deg, var(--gold-soft), var(--gold-deep));
+      display: grid; place-items: center;
+      font-family: 'Sora'; font-weight: 800; font-size: .88rem; color: #1a1206;
+    }
+    .sp-body { flex: 1; min-width: 0; }
+    .sp-name { font-weight: 700; font-size: .88rem; margin-bottom: 1px; }
+    .sp-msg { color: var(--muted); font-size: .8rem; line-height: 1.3; }
+    .sp-time { color: var(--muted-2); font-size: .74rem; margin-top: 3px; }
+    .sp-close {
+      flex: none; background: none; border: none; color: var(--muted-2);
+      cursor: pointer; font-size: 1rem; line-height: 1; padding: 2px;
+      transition: color .2s;
+    }
+    .sp-close:hover { color: var(--text); }
+
+    /* =========================================================
+       STICKY MOBILE BAR
+       ========================================================= */
+    .sticky-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 58;
+      background: linear-gradient(180deg, transparent, rgba(10,10,12,.97) 25%);
+      padding: 10px 16px 22px;
+      transform: translateY(100%);
+      transition: transform .4s cubic-bezier(.2,.8,.2,1);
+    }
+    .sticky-bar.show { transform: translateY(0); }
+    .sticky-bar .btn { width: 100%; font-size: .97rem; padding: 16px 20px; border-radius: 13px; }
+    @media (min-width: 768px) { .sticky-bar { display: none !important; } }
+
+    /* esconde o botão flutuante no mobile (sticky bar substitui) */
+    @media (max-width: 767px) { .wa-float { display: none !important; } }
   </style>
 </head>
 <body>
@@ -632,6 +722,19 @@
         <span><span class="pin"></span> Foco 100% em planejados</span>
         <span><span class="pin"></span> Conversa sem compromisso</span>
         <span><span class="pin"></span> Resposta direto no seu WhatsApp</span>
+      </div>
+
+      <!-- CONTADOR DE VAGAS -->
+      <div class="urgency-bar reveal in" data-delay="5">
+        <span class="urgency-dot"></span>
+        <span>Aceitando novas lojas em julho —&nbsp;<strong id="vagas-txt">2 vagas restantes</strong></span>
+        <span class="urgency-slots" aria-hidden="true">
+          <span class="urgency-slot filled"></span>
+          <span class="urgency-slot filled"></span>
+          <span class="urgency-slot filled"></span>
+          <span class="urgency-slot empty"></span>
+          <span class="urgency-slot empty"></span>
+        </span>
       </div>
     </div>
   </header>
@@ -980,6 +1083,29 @@
     </div>
   </footer>
 
+  <!-- ===================== SOCIAL PROOF TOAST ===================== -->
+  <div class="sp-wrap" id="spWrap" aria-live="polite" aria-atomic="true">
+    <div class="sp-toast" id="spToast" role="status">
+      <div class="sp-av" id="spAv">RS</div>
+      <div class="sp-body">
+        <div class="sp-name" id="spName">Loja em Porto Alegre/RS</div>
+        <div class="sp-msg" id="spMsg">acabou de enviar mensagem</div>
+        <div class="sp-time" id="spTime">agora mesmo</div>
+      </div>
+      <button class="sp-close" id="spClose" aria-label="Fechar">✕</button>
+    </div>
+  </div>
+
+  <!-- ===================== STICKY MOBILE BAR ===================== -->
+  <div class="sticky-bar" id="stickyBar">
+    <a class="btn btn-primary"
+       href="https://wa.me/5553999972327?text=Oi%20Igor,%20acabei%20de%20ver%20a%20p%C3%A1gina%20do%20M%C3%A9todo%20Projeto%20Fechado%20e%20quero%20entender%20se%20serve%20para%20minha%20loja%20de%20planejados."
+       target="_blank" rel="noopener" data-cta="sticky">
+      <svg class="wa" viewBox="0 0 24 24" aria-hidden="true"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.945C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 018.413 3.488 11.824 11.824 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.51 5.26l-.999 3.648 3.978-1.045z"/></svg>
+      Quero o Método Projeto Fechado
+    </a>
+  </div>
+
   <!-- ===================== WHATSAPP FLUTUANTE ===================== -->
   <a class="wa-float" id="waFloat"
      href="https://wa.me/5553999972327?text=Oi%20Igor,%20acabei%20de%20ver%20a%20p%C3%A1gina%20do%20M%C3%A9todo%20Projeto%20Fechado%20e%20quero%20entender%20se%20serve%20para%20minha%20loja%20de%20planejados."
@@ -1170,10 +1296,131 @@
         track('Lead', {
           content_name: 'WhatsApp - ' + local,
           content_category: 'lead_whatsapp',
-          cta_location: local,            // hero, plano, objecao, final, float, etc.
+          cta_location: local,
           status: 'click_whatsapp'
         });
       }, true);
+
+      /* ---------- Scroll depth: 25 / 50 / 75 / 90% ---------- */
+      var depthFired = {};
+      var depthMilestones = [25, 50, 75, 90];
+      function checkScrollDepth() {
+        var scrolled = window.scrollY || window.pageYOffset;
+        var docH = Math.max(
+          document.body.scrollHeight, document.documentElement.scrollHeight,
+          document.body.offsetHeight, document.documentElement.offsetHeight
+        ) - window.innerHeight;
+        if (docH <= 0) return;
+        var pct = Math.round((scrolled / docH) * 100);
+        depthMilestones.forEach(function (m) {
+          if (!depthFired[m] && pct >= m) {
+            depthFired[m] = true;
+            track('ViewContent', {
+              content_name: 'scroll_depth_' + m,
+              content_category: 'engagement',
+              scroll_depth: m,
+              page_path: location.pathname
+            });
+          }
+        });
+      }
+      window.addEventListener('scroll', checkScrollDepth, { passive: true });
+
+    })();
+  </script>
+
+  <!-- ===================== SOCIAL PROOF + STICKY + VAGAS ===================== -->
+  <script>
+    (function () {
+      "use strict";
+
+      var WA = 'https://wa.me/5553999972327?text=Oi%20Igor,%20acabei%20de%20ver%20a%20p%C3%A1gina%20do%20M%C3%A9todo%20Projeto%20Fechado%20e%20quero%20entender%20se%20serve%20para%20minha%20loja%20de%20planejados.';
+
+      /* ---- STICKY MOBILE BAR ---- */
+      var stickyBar = document.getElementById('stickyBar');
+      var heroEl = document.querySelector('.hero');
+      function updateSticky() {
+        if (!stickyBar || !heroEl) return;
+        var heroBottom = heroEl.getBoundingClientRect().bottom;
+        stickyBar.classList.toggle('show', heroBottom < 0);
+      }
+      window.addEventListener('scroll', updateSticky, { passive: true });
+      updateSticky();
+
+      /* ---- CONTADOR DE VAGAS ---- */
+      var TOTAL_VAGAS = 5;
+      var VAGAS_PREENCHIDAS = 3;   // <-- ajuste quando ocupar mais vagas
+      var restantes = TOTAL_VAGAS - VAGAS_PREENCHIDAS;
+      var vagasTxt = document.getElementById('vagas-txt');
+      if (vagasTxt) {
+        vagasTxt.textContent = restantes + (restantes === 1 ? ' vaga restante' : ' vagas restantes');
+      }
+      // atualiza os bolinhas
+      var slots = document.querySelectorAll('.urgency-slot');
+      slots.forEach(function (s, i) {
+        s.classList.toggle('filled', i < VAGAS_PREENCHIDAS);
+        s.classList.toggle('empty',  i >= VAGAS_PREENCHIDAS);
+      });
+
+      /* ---- SOCIAL PROOF TOASTS ---- */
+      var proofs = [
+        { av: 'RS', name: 'Loja em Porto Alegre/RS',     msg: 'acabou de enviar mensagem',    time: 'agora mesmo' },
+        { av: 'SC', name: 'Loja em Florianópolis/SC',    msg: 'perguntou sobre o método',     time: '4 min atrás' },
+        { av: 'PR', name: 'Loja em Curitiba/PR',         msg: 'solicitou uma conversa',       time: '9 min atrás' },
+        { av: 'SP', name: 'Loja em Campinas/SP',         msg: 'acabou de enviar mensagem',    time: '15 min atrás' },
+        { av: 'MG', name: 'Loja em Belo Horizonte/MG',  msg: 'perguntou sobre as vagas',     time: '22 min atrás' },
+        { av: 'GO', name: 'Loja em Goiânia/GO',         msg: 'entrou em contato',            time: '28 min atrás' },
+        { av: 'BA', name: 'Loja em Salvador/BA',         msg: 'acabou de enviar mensagem',    time: '35 min atrás' },
+      ];
+
+      var toast     = document.getElementById('spToast');
+      var spAv      = document.getElementById('spAv');
+      var spName    = document.getElementById('spName');
+      var spMsg     = document.getElementById('spMsg');
+      var spTime    = document.getElementById('spTime');
+      var spClose   = document.getElementById('spClose');
+      var spDismiss = false;
+      var spIndex   = 0;
+
+      if (spClose) {
+        spClose.addEventListener('click', function () {
+          spDismiss = true;
+          hideToast();
+        });
+      }
+
+      function showToast(proof) {
+        if (!toast || spDismiss) return;
+        spAv.textContent   = proof.av;
+        spName.textContent = proof.name;
+        spMsg.textContent  = proof.msg;
+        spTime.textContent = proof.time;
+        toast.classList.remove('hide');
+        toast.classList.add('show');
+        setTimeout(hideToast, 5000);
+      }
+      function hideToast() {
+        if (!toast) return;
+        toast.classList.remove('show');
+        toast.classList.add('hide');
+      }
+
+      function nextToast() {
+        if (spDismiss) return;
+        var proof = proofs[spIndex % proofs.length];
+        spIndex++;
+        showToast(proof);
+      }
+
+      // Primeiro toast após 8s, depois a cada 22s
+      var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!prefersReduced) {
+        setTimeout(function () {
+          nextToast();
+          setInterval(nextToast, 22000);
+        }, 8000);
+      }
+
     })();
   </script>
   <!-- ===================== /TRACKING ===================== -->
