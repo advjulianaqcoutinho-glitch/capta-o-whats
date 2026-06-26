@@ -585,37 +585,6 @@
     }
 
     /* =========================================================
-       URGÊNCIA — contador de vagas
-       ========================================================= */
-    .urgency-bar {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 22px;
-      background: rgba(233,162,59,.07);
-      border: 1px solid rgba(233,162,59,.28);
-      border-radius: 999px;
-      padding: 10px 20px;
-      font-size: .9rem;
-      font-weight: 600;
-      color: var(--muted);
-    }
-    .urgency-dot {
-      width: 8px; height: 8px; border-radius: 50%; flex: none;
-      background: var(--gold);
-      box-shadow: 0 0 8px var(--gold);
-      animation: upulse 1.6s ease-in-out infinite;
-    }
-    @keyframes upulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.5)} }
-    .urgency-bar strong { color: var(--gold); }
-    .urgency-slots { display: inline-flex; gap: 5px; margin-left: 4px; }
-    .urgency-slot {
-      width: 9px; height: 9px; border-radius: 50%;
-    }
-    .urgency-slot.filled { background: var(--gold); }
-    .urgency-slot.empty { background: rgba(233,162,59,.18); border: 1px solid rgba(233,162,59,.35); }
-
-    /* =========================================================
        SOCIAL PROOF — toast
        ========================================================= */
     .sp-wrap {
@@ -724,18 +693,6 @@
         <span><span class="pin"></span> Resposta direto no seu WhatsApp</span>
       </div>
 
-      <!-- CONTADOR DE VAGAS -->
-      <div class="urgency-bar reveal in" data-delay="5">
-        <span class="urgency-dot"></span>
-        <span>Aceitando novas lojas em <strong id="mes-atual">julho</strong> —&nbsp;<strong id="vagas-txt">2 vagas restantes</strong></span>
-        <span class="urgency-slots" aria-hidden="true">
-          <span class="urgency-slot filled"></span>
-          <span class="urgency-slot filled"></span>
-          <span class="urgency-slot filled"></span>
-          <span class="urgency-slot empty"></span>
-          <span class="urgency-slot empty"></span>
-        </span>
-      </div>
     </div>
   </header>
 
@@ -1347,21 +1304,6 @@
       window.addEventListener('scroll', updateSticky, { passive: true });
       updateSticky();
 
-      /* ---- CONTADOR DE VAGAS ---- */
-      var TOTAL_VAGAS = 5;
-      var VAGAS_PREENCHIDAS = 3;   // <-- ajuste quando ocupar mais vagas
-      var restantes = TOTAL_VAGAS - VAGAS_PREENCHIDAS;
-      var vagasTxt = document.getElementById('vagas-txt');
-      if (vagasTxt) {
-        vagasTxt.textContent = restantes + (restantes === 1 ? ' vaga restante' : ' vagas restantes');
-      }
-      // mês atual em português, atualiza sozinho todo mês
-      var mesEl = document.getElementById('mes-atual');
-      if (mesEl) {
-        var meses = ['janeiro','fevereiro','março','abril','maio','junho',
-                     'julho','agosto','setembro','outubro','novembro','dezembro'];
-        mesEl.textContent = meses[new Date().getMonth()];
-      }
       // atualiza os bolinhas
       var slots = document.querySelectorAll('.urgency-slot');
       slots.forEach(function (s, i) {
